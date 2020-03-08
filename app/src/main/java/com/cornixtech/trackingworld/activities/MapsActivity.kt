@@ -25,6 +25,7 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
+import com.google.android.material.textfield.TextInputLayout
 import com.gun0912.tedpermission.PermissionListener
 import com.gun0912.tedpermission.TedPermission
 import io.github.inflationx.viewpump.ViewPumpContextWrapper
@@ -40,9 +41,12 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private var lat = 0.0
     private var long = 0.0
+    private var userCurrentLat = 0.0
+    private var userCurrentLong = 0.0
+
     private lateinit var mapFragment: SupportMapFragment
-    var userAddMarker:Marker? = null
-    var initLocationMarker : Marker? = null
+    var userAddMarker: Marker? = null
+    var initLocationMarker: Marker? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -92,23 +96,18 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             if (it) {
                 mMap.clear()
                 mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(LatLng(lat, long), 14f))
-                initLocationMarker =    mMap.addMarker(
+                initLocationMarker = mMap.addMarker(
                     (MarkerOptions().position(LatLng(lat, long)).title("User Current Location"))
                 )
-                val list = UserDetailManager.instance.getLocationsNearYou(LatLng(lat,long))
-                for(item in list){
-                    mMap.addMarker((MarkerOptions().position(LatLng(item.userLat, item.userLong)).title(item.userLocType).snippet(item.userComment))).setIcon(
-                        BitmapDescriptorFactory.fromResource(R.drawable.twotone_person_pin_circle_white_36))
-                }
-                Log.e("TrackingWorld", list.toString())
+                updateMapWithNewMarkers()
                 addLocationFab.show()
             }
         }
         mMap.setOnMapClickListener {
-            if(initLocationMarker!=null){
+            if (initLocationMarker != null) {
                 initLocationMarker!!.remove()
             }
-            if(userAddMarker!= null){
+            if (userAddMarker != null) {
                 userAddMarker!!.remove()
             }
 //            mMap.clear()
@@ -131,6 +130,22 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                 e.printStackTrace()
             }
         }
+
+    }
+
+    private fun updateMapWithNewMarkers() {
+        val list =
+            UserDetailManager.instance.getLocationsNearYou(LatLng(userCurrentLat, userCurrentLong))
+        for (item in list) {
+            mMap.addMarker(
+                (MarkerOptions().position(LatLng(item.userLat, item.userLong))
+                    .title(item.userLocType).snippet(item.userComment))
+            ).setIcon(
+                BitmapDescriptorFactory.fromResource(R.drawable.twotone_person_pin_circle_white_36)
+            )
+        }
+        Log.e("TrackingWorld", list.toString())
+        Log.e("TrackingWorld", "ALL DATABASE "+UserDetailManager.instance.getAllObjectsFromDatabase().toString())
 
     }
 
@@ -170,6 +185,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         fusedLocationClient.lastLocation.addOnSuccessListener {
             lat = it.latitude
             long = it.longitude
+            userCurrentLat = it.latitude
+            userCurrentLong = it.longitude
             Toast.makeText(
                 this@MapsActivity,
                 "location is $lat,$long",
@@ -192,26 +209,50 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     private fun setListeners() {
         addLocationFab.setOnClickListener {
             addLocationFab.shrink()
-            val dialog = Dialog(this)
-            dialog.setContentView(R.layout.dialog_add_location)
-            val tvCancel = dialog.findViewById<TextView>(R.id.tvCancel)
-            val tvAddLocation = dialog.findViewById<View>(R.id.tvAddLocation)
-            val etLocationName = dialog.findViewById<EditText>(R.id.etLocationName)
-            val etDescription = dialog.findViewById<EditText>(R.id.etDescription)
-            tvCancel.setOnClickListener {
-                dialog.cancel()
-            }
-            tvAddLocation.setOnClickListener {
-                addLocationInDataBase(etLocationName.text.toString(), etDescription.text.toString())
-                dialog.dismiss()
-            }
-            dialog.show()
-            dialog.setOnCancelListener {
-                addLocationFab.extend()
-            }
+            showDialog()
         }
     }
 
+    private fun showDialog(){
+        val dialog = Dialog(this)
+        dialog.setContentView(R.layout.dialog_add_location)
+        val tvCancel = dialog.findViewById<TextView>(R.id.tvCancel)
+        val tvAddLocation = dialog.findViewById<View>(R.id.tvAddLocation)
+        val etLocationName = dialog.findViewById<EditText>(R.id.etLocationName)
+        val etDescription = dialog.findViewById<EditText>(R.id.etDescription)
+        val descriptionInputLayout =
+            dialog.findViewById<TextInputLayout>(R.id.descriptionInputLayout)
+        val locationTypeInputLayout =
+            dialog.findViewById<TextInputLayout>(R.id.locationTypeInputLayout)
+        tvCancel.setOnClickListener {
+            dialog.cancel()
+        }
+        tvAddLocation.setOnClickListener {
+            if (etLocationName.text.toString().trim()
+                    .isNotEmpty() && etDescription.text.toString().trim().isNotEmpty()
+            ) {
+                descriptionInputLayout.error = null
+                locationTypeInputLayout.error = null
+                addLocationInDataBase(
+                    etLocationName.text.toString(),
+                    etDescription.text.toString()
+                )
+                mMap.clear()
+                updateMapWithNewMarkers()
+                addLocationFab.extend()
+                dialog.dismiss()
+            } else {
+                descriptionInputLayout.error = "Fields are missing"
+                locationTypeInputLayout.error = "Fields are missing"
+            }
+
+
+        }
+        dialog.show()
+        dialog.setOnCancelListener {
+            addLocationFab.extend()
+        }
+    }
     private fun addLocationInDataBase(locName: String, locDesc: String) {
         val userId = UserManager.instance.getLoggedInUserId()
         UserDetailManager.instance.addObjectInDatabase(

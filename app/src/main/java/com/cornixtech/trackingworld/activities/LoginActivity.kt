@@ -98,11 +98,13 @@ class LoginActivity : AppCompatActivity() {
                 }
             }
         })
+
         signUpText.setOnClickListener {
             startActivity(Intent(this, SignUpActivity::class.java))
         }
         fabNextButton.setOnClickListener {
             loginUser(etEmailField.text.toString(), etPassword.text.toString())
+
         }
     }
 
@@ -111,6 +113,7 @@ class LoginActivity : AppCompatActivity() {
         if (userId.isNotEmpty()) {
             UserManager.instance.setLoggedInUserId(userId)
             startActivity(Intent(this@LoginActivity, MapsActivity::class.java))
+            finish()
         }else{
             Toast.makeText(this@LoginActivity, "Login credential not correct", Toast.LENGTH_SHORT).show()
         }
