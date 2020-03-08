@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "810756522277",
+    "firebase_url": "https://trackingworld.firebaseio.com",
+    "project_id": "trackingworld",
+    "storage_bucket": "trackingworld.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:810756522277:android:46bde4f7e54a397880dacc",
+        "android_client_info": {
+          "package_name": "com.cornixtech.trackingworld"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "810756522277-2ql2c6ovfdn7av0lq0735ees9q93029n.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.cornixtech.trackingworld",
+            "certificate_hash": "8776c6c419a54b94634e4878f43c8eb279672270"
+          }
+        },
+        {
+          "client_id": "810756522277-1t6ptgi6k2ijfg3urlvm9gto6h2t0dug.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAeZaUriT8knfZEFBwqTLMkrpX28n_UnG0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "810756522277-1t6ptgi6k2ijfg3urlvm9gto6h2t0dug.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
