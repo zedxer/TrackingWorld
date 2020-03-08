@@ -12,7 +12,7 @@ import com.cornixtech.trackingworld.utils.Constants
 import com.cornixtech.trackingworld.utils.UserManager
 import io.github.inflationx.viewpump.ViewPumpContextWrapper
 import kotlinx.android.synthetic.main.activity_sign_up.*
-
+/**CREATED BY NAQI HASSAN 3/9/2020**/
 class SignUpActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {

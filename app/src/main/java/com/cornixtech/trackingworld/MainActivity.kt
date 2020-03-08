@@ -8,7 +8,7 @@ import com.cornixtech.trackingworld.activities.LoginActivity
 import com.cornixtech.trackingworld.activities.MapsActivity
 
 class MainActivity : AppCompatActivity() {
-
+/**THIS IS JUST A SAMPLE ACTIVITY ALL THE WORK IS DONE IN THE ACTIVITIES PACKAGE**/
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)

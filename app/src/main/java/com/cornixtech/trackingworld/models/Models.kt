@@ -2,7 +2,7 @@ package com.cornixtech.trackingworld.models
 
 import io.realm.RealmObject
 import io.realm.annotations.PrimaryKey
-
+/**CREATED BY NAQI HASSAN 3/9/2020**/
 open class UserModel : RealmObject() {
     @PrimaryKey
     var userId = ""

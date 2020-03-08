@@ -19,7 +19,7 @@ import com.cornixtech.trackingworld.utils.Constants
 import com.cornixtech.trackingworld.utils.UserManager
 import io.github.inflationx.viewpump.ViewPumpContextWrapper
 import kotlinx.android.synthetic.main.activity_login.*
-
+/**CREATED BY NAQI HASSAN 3/9/2020**/
 class LoginActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
