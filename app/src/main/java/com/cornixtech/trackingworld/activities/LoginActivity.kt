@@ -8,17 +8,25 @@ import android.os.Bundle
 import android.os.Handler
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.View
 import android.view.Window
 import android.view.WindowManager
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.widget.addTextChangedListener
+import com.android.volley.DefaultRetryPolicy
+import com.android.volley.Request
+import com.android.volley.Response
+import com.android.volley.toolbox.JsonObjectRequest
+import com.android.volley.toolbox.Volley
 import com.cornixtech.trackingworld.R
+import com.cornixtech.trackingworld.models.PrayerModel
 import com.cornixtech.trackingworld.utils.Constants
 import com.cornixtech.trackingworld.utils.UserManager
+import com.google.gson.Gson
 import io.github.inflationx.viewpump.ViewPumpContextWrapper
 import kotlinx.android.synthetic.main.activity_login.*
+
 /**CREATED BY NAQI HASSAN 3/9/2020**/
 class LoginActivity : AppCompatActivity() {
 
@@ -45,6 +53,36 @@ class LoginActivity : AppCompatActivity() {
         )
         setListeners()
 
+        getSomething()
+
+    }
+
+    fun getSomething() {
+
+        val url = "http://api.aladhan.com/v1/calendar?latitude=24.906164&longitude=67.187858&annual=true&method=1&month=5&year=2020"
+
+        val jsonObjectRequest = JsonObjectRequest(Request.Method.GET, url, null,
+            Response.Listener { response ->
+                val popUpValues = Gson().fromJson(response.toString(), PrayerModel::class.java)
+//                Log.e("RESPONSE", response.toString())
+                Log.e("RESPONSE21", popUpValues.data.january[24].date.toString())
+            },
+            Response.ErrorListener { error ->
+                error.printStackTrace()
+                Toast.makeText(
+                    applicationContext,
+                    "Error While Downloading Index",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        )
+
+        jsonObjectRequest.retryPolicy = DefaultRetryPolicy(
+            100000,
+            5,
+            DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
+        )
+        Volley.newRequestQueue(this@LoginActivity).add(jsonObjectRequest)
     }
 
     private fun setListeners() {
@@ -114,8 +152,9 @@ class LoginActivity : AppCompatActivity() {
             UserManager.instance.setLoggedInUserId(userId)
             startActivity(Intent(this@LoginActivity, MapsActivity::class.java))
             finish()
-        }else{
-            Toast.makeText(this@LoginActivity, "Login credential not correct", Toast.LENGTH_SHORT).show()
+        } else {
+            Toast.makeText(this@LoginActivity, "Login credential not correct", Toast.LENGTH_SHORT)
+                .show()
         }
     }
 

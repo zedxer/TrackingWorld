@@ -9,6 +9,7 @@ apply plugin: 'realm-android'
 android {
     compileSdkVersion 29
     buildToolsVersion "29.0.2"
+    useLibrary 'org.apache.http.legacy'
 
     defaultConfig {
         applicationId "com.cornixtech.trackingworld"
@@ -41,7 +42,9 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
-
+    implementation 'com.android.volley:volley:1.1.1'
+    implementation 'com.google.code.gson:gson:2.8.6'
+    implementation 'com.squareup.retrofit2:converter-gson:2.3.0'
     implementation 'io.github.inflationx:calligraphy3:3.1.1'
     implementation 'io.github.inflationx:viewpump:2.0.3'
     implementation 'com.google.android.exoplayer:exoplayer-core:2.8.3'
